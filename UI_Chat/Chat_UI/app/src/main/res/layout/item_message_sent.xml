@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/text_message_body"
-        android:text="HO HO HO HO"
+        android:text="HoHo"
         android:background="@drawable/blue_message_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
