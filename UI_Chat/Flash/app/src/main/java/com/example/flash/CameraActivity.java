@@ -44,6 +44,7 @@ public class CameraActivity extends AppCompatActivity {
     private CameraPreview mPreview;
     Camera.Parameters param;
     FrameLayout preview;
+
     TextView txt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,38 +73,9 @@ public class CameraActivity extends AppCompatActivity {
         return c;
     }
 
-    protected void onStart() {
-        super.onStart();
-        shareScreen();
-    }
-
-    private void shareScreen() {
-        try {
-
-            File cacheDir = new File(
-                    android.os.Environment.getExternalStorageDirectory(),
-                    "devdeeds");
-
-            if (!cacheDir.exists()) {
-                cacheDir.mkdirs();
-            }
-
-            String path = new File(
-                    android.os.Environment.getExternalStorageDirectory(),
-                    "devdeeds") + "/screenshot.jpg";
-
-            Utils.savePic(Utils.takeScreenShot(this), path);
-
-            Toast.makeText(getApplicationContext(), "Screenshot Saved", Toast.LENGTH_SHORT).show();
-
-
-        } catch (NullPointerException ignored) {
-            ignored.printStackTrace();
-        }
-    }
 
     public void backToMain(View v){
-        Bitmap b = b = ScreenshotUtils.getScreenShot(rootContent);
+        Bitmap b = screenShot(mPreview);
         save(b);
     }
     public Bitmap screenShot(View view) {
@@ -118,9 +90,6 @@ public class CameraActivity extends AppCompatActivity {
         android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
         TextView txt = (TextView) findViewById(R.id.textView2);
         try {
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage("Saved");
-            alert.show();
             String mPath = Environment.getExternalStorageDirectory().toString() + "/Pics/" + now + ".jpg";
             txt.setText(mPath);
             Bitmap bitmap = b;
