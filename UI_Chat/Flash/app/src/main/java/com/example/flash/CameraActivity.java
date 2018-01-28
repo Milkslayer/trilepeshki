@@ -25,6 +25,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,6 +43,8 @@ public class CameraActivity extends AppCompatActivity {
     private Camera camera;
     private CameraPreview mPreview;
     Camera.Parameters param;
+    FrameLayout preview;
+    TextView txt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +56,9 @@ public class CameraActivity extends AppCompatActivity {
         param.setColorEffect(android.hardware.Camera.Parameters.EFFECT_MONO);
 
         camera.setParameters(param);
-
+        txt = (TextView) findViewById(R.id.textView2);
         mPreview = new CameraPreview(this, camera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
 
     }
@@ -68,13 +71,44 @@ public class CameraActivity extends AppCompatActivity {
         }
         return c;
     }
+
+    protected void onStart() {
+        super.onStart();
+        shareScreen();
+    }
+
+    private void shareScreen() {
+        try {
+
+            File cacheDir = new File(
+                    android.os.Environment.getExternalStorageDirectory(),
+                    "devdeeds");
+
+            if (!cacheDir.exists()) {
+                cacheDir.mkdirs();
+            }
+
+            String path = new File(
+                    android.os.Environment.getExternalStorageDirectory(),
+                    "devdeeds") + "/screenshot.jpg";
+
+            Utils.savePic(Utils.takeScreenShot(this), path);
+
+            Toast.makeText(getApplicationContext(), "Screenshot Saved", Toast.LENGTH_SHORT).show();
+
+
+        } catch (NullPointerException ignored) {
+            ignored.printStackTrace();
+        }
+    }
+
     public void backToMain(View v){
-        Bitmap b = screenShot(v);
+        Bitmap b = b = ScreenshotUtils.getScreenShot(rootContent);
         save(b);
     }
     public Bitmap screenShot(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(camera.getParameters().getPreviewSize().width,
-                camera.getParameters().getPreviewSize().width, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),
+                view.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
         return bitmap;
